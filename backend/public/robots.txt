@@ -1,0 +1,6 @@
+# ZIPCAR backend (Laravel API): indexing is disabled.
+User-agent: *
+Disallow: /
+Disallow: /api/
+Disallow: /sanctum/
+Disallow: /storage/
