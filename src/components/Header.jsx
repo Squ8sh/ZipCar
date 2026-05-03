@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { me, logout } from '../api/auth';
 import './style.css';
 
 function Header() {
-  // Состояние для светлой/темной темы
   const [isDarkMode, setIsDarkMode] = useState(false);
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const navigate = useNavigate();
 
-  // Функция для переключения темы
   const toggleTheme = (theme) => {
     if (theme === 'dark') {
       setIsDarkMode(true);
@@ -17,6 +20,37 @@ function Header() {
       document.body.classList.remove('dark-mode');
     }
   };
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadUser() {
+      try {
+        const currentUser = await me();
+        if (mounted) setUser(currentUser ?? null);
+      } catch {
+        if (mounted) setUser(null);
+      } finally {
+        if (mounted) setLoadingUser(false);
+      }
+    }
+
+    loadUser();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  async function handleLogout() {
+    try {
+      await logout();
+      setUser(null);
+      navigate('/');
+    } catch (e) {
+      console.error(e);
+    }
+  }
 
   return (
     <header>
@@ -35,36 +69,75 @@ function Header() {
                 <a href="#tariff" className="anchor-link">Тарифы</a>
               </li>
               <li className="site-navigation-item">
-                <a href="#FAQ" className="anchor-link">Помощь</a>
+                <a href="#news" className="anchor-link">Новости</a>
               </li>
               <li className="site-navigation-item">
-                +7 (999) 162-79-25
+                <a href="#FAQ" className="anchor-link">Помощь</a>
               </li>
+
+              {user?.is_admin && (
+                <li className="site-navigation-item">
+                  <Link to="/admin" className="anchor-link admin-nav-link">
+                    Админ панель
+                  </Link>
+                </li>
+              )}
+
             </ul>
           </nav>
-          <ul className="themes">
-            <li>
-              <button
-                className={`theme-button ${!isDarkMode ? 'active' : ''} theme-button-light`}
-                type="button"
-                onClick={() => toggleTheme('light')}
-              >
-                Светлая
-              </button>
-            </li>
-            <li>
-              <button
-                className={`theme-button ${isDarkMode ? 'active' : ''} theme-button-dark`}
-                type="button"
-                onClick={() => toggleTheme('dark')}
-              >
-                Темная
-              </button>
-            </li>
-          </ul>
+
+          <div className="header-controls">
+            <ul className="themes">
+              <li>
+                <button
+                  className={`theme-button ${!isDarkMode ? 'active' : ''} theme-button-light`}
+                  type="button"
+                  onClick={() => toggleTheme('light')}
+                >
+                  Светлая
+                </button>
+              </li>
+              <li>
+                <button
+                  className={`theme-button ${isDarkMode ? 'active' : ''} theme-button-dark`}
+                  type="button"
+                  onClick={() => toggleTheme('dark')}
+                >
+                  Темная
+                </button>
+              </li>
+            </ul>
+
+            <div className="auth-actions">
+              {!loadingUser && (
+                user ? (
+                  <>
+                    <Link to="/profile" className="theme-button theme-button-light auth-link">
+                      Профиль
+                    </Link>
+                    <button
+                      type="button"
+                      className="theme-button theme-button-dark auth-link"
+                      onClick={handleLogout}
+                    >
+                      Выйти
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <Link to="/login" className="theme-button theme-button-light auth-link">
+                      Вход
+                    </Link>
+                    <Link to="/register" className="theme-button theme-button-dark auth-link">
+                      Регистрация
+                    </Link>
+                  </>
+                )
+              )}
+            </div>
+          </div>
         </div>
       </div>
-      
     </header>
   );
 }

@@ -3,26 +3,29 @@ import './style.css';
 function Footer() {
     return (
         <footer>
-            <div class="logo">
+            <div className="logo">
                 <img src="../img/svg/Logo.svg" alt="" className='log'></img>
                 <p>115054, Москва,
                     Большая Пионерская улица, 28</p>
             </div>
-            <ul class="site-navigation">
-                <li class="site-navigation-item">
-                    <a href="#our" class="anchor-link">О нас</a>
+            <ul className="site-navigation">
+                <li className="site-navigation-item">
+                    <a href="#Our" className="anchor-link">О нас</a>
                 </li>
-                <li class="site-navigation-item">
-                    <a href="#rules" class="anchor-link">Правила</a>
+                <li className="site-navigation-item">
+                    <a href="#rules" className="anchor-link">Правила</a>
                 </li>
-                <li class="site-navigation-item">
-                    <a href="#tariff" class="anchor-link">Тарифы</a>
+                <li className="site-navigation-item">
+                    <a href="#tariff" className="anchor-link">Тарифы</a>
                 </li>
-                <li class="site-navigation-item">
-                    <a href="#FAQ" class="anchor-link">Помощь</a>
+                <li className="site-navigation-item">
+                    <a href="#news" className="anchor-link">Новости</a>
+                </li>
+                <li className="site-navigation-item">
+                    <a href="#FAQ" className="anchor-link">Помощь</a>
                 </li>
             </ul>
-            <ul class="socials">
+            <ul className="socials">
                 <li>
                     <img src="img/svg/vk.svg" alt=""></img>
                 </li>
